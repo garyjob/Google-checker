@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/*/**
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
+tags
+*.log
