@@ -4,6 +4,7 @@
 var express = require('express');
 var http = require('http');
 var fs = require('fs');
+var redis = require('redis');
 var CONFIG = JSON.parse(fs.readFileSync('config.js').toString());//Configuration files 
 var statusOK = true; //relationship status with server
 var timePing = 0; //number of times subject server was ping
@@ -11,7 +12,14 @@ var lastTimePing = -1;//
 var timeResponse = 0; //number of times subject server responded
 var intervals = [];//time between intervals and response
 var lastBody = "Not assigned"; //The latest body from Google
+
+/* Server Instantiations */
 var app = module.exports = express.createServer();
+
+var redisClient = redis.createClient(CONFIG.redisPort, CONFIG.redisHost);
+redisClient.on('error', function(error) {
+  console.log("Redis Client error : "+error);
+})
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -104,9 +112,9 @@ function callGoogle(){
            *  Google server is taking too long to respond to our request, set and kill test 
            **/
            if(currentInterval > CONFIG.timeToLive){
-             clearInterval(test);
+             begForAQuickDeath("Health status check ended at last call "+(timePing-1)+
+                               ". Google is taking too long to respond : "+(currentInterval/1000)+" seconds");
              statusOK = false;
-             console.log("Health status check ended at last call "+(timePing-1)+". Google is taking too long to respond : "+(currentInterval/1000)+" seconds");
              lastTimePing = timePing;
            }
 
@@ -125,14 +133,19 @@ function callGoogle(){
       if(res.statusCode==302 && /sorry/i.test(res.headers.location)){
         timeResponse++;
         statusOK = false;
-        console.log("Incoming notification number "+timeResponse+" : Opps, Google banned us after " + (timePing-1)+" responses \r\n");
-        clearInterval(test);
+        begForAQuickDeath("Incoming notification number "+timeResponse+" : Opps, Google banned us after " + (timePing-1)+" responses \r\n");
         lastTimePing = timePing;
       }
 
   }).on('error', function(e) {
       console.log("Got error: " + e.message);
   });
+}
+
+function begForAQuickDeath(errorOutput){
+  redisClient.hmset("serverDown", {"ip address" : "my ip address", "port number" : "my port"});
+  clearInterval(test);
+  console.log(errorOutput);
 }
 
 /* Call the interval for sweeping google */
