@@ -38,13 +38,13 @@ Gcm.prototype.callGoogle = function(){
 
   http.get(options, function(res) {
       if(res.statusCode==200){ // Got a valid response from the server
-        
+
         /* a holder for all the chunks coming in from this request */
         var body = "";
         res.on('data', function(chunk) { //Data is ready
           body += chunk;
         });
-        
+
         /* when the loading of the body is finished*/
         res.on('end', function() {
 
@@ -77,7 +77,7 @@ Gcm.prototype.callGoogle = function(){
 function begForAQuickDeath(errorOutput){
   console.log("Begging for a quick death now");
   console.log(ethernetInterfaces);
-  Gcm.prototype.redisClient.lpush("serverStatus", ethernetInterfaces);
+  Gcm.prototype.redisClient.lpush("serverStatus", JSON.stringify(ethernetInterfaces));
   console.log(errorOutput);
 }
 
