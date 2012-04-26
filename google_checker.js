@@ -131,6 +131,7 @@ function callGoogle(){
 
       /* if recaptcha has been served by Google for robot detection */
       if(res.statusCode==302 && /sorry/i.test(res.headers.location)){
+        console.log(res);
         timeResponse++;
         statusOK = false;
         begForAQuickDeath("Incoming notification number "+timeResponse+" : Opps, Google banned us after " + (timePing-1)+" responses \r\n");
