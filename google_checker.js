@@ -16,10 +16,10 @@ var lastBody = "Not assigned"; //The latest body from Google
 /* Server Instantiations */
 var app = module.exports = express.createServer();
 
-var redisClient = redis.createClient(CONFIG.redisPort, CONFIG.redisHost);
-redisClient.on('error', function(error) {
-  console.log("Redis Client error : "+error);
-})
+//var redisClient = redis.createClient(CONFIG.redisPort, CONFIG.redisHost);
+//redisClient.on('error', function(error) {
+//  console.log("Redis Client error : "+error);
+//})
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -122,8 +122,8 @@ function callGoogle(){
            timeResponse++;
       
            /* outputting the very last body to see what we are getting from Google */
-           if( timeResponse == lastTimePing )
-             console.log(body);
+           //if( timeResponse == lastTimePing )
+           // console.log(body);
 
         }); //End body finished loading
 
@@ -143,7 +143,7 @@ function callGoogle(){
 }
 
 function begForAQuickDeath(errorOutput){
-  redisClient.hmset("serverDown", {"ip address" : "my ip address", "port number" : "my port"});
+  //redisClient.hmset("serverDown", {"ip address" : "my ip address", "port number" : "my port"});
   clearInterval(test);
   console.log(errorOutput);
 }
