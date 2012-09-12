@@ -15,12 +15,10 @@ var Gcm =  function(){
 }
 
 /* Server Instantiations */
-/*
 Gcm.prototype.redisClient = redis.createClient(CONFIG.redisPort, CONFIG.redisHost);
 Gcm.prototype.redisClient.on('error', function(error) {
   console.log("Redis Client error : "+error);
 })
-*/
 
 /** 
  * This function makes a call to Google to check if this instance is being throttled 
@@ -79,7 +77,7 @@ Gcm.prototype.callGoogle = function(){
 function begForAQuickDeath(errorOutput){
   console.log("Begging for a quick death now");
   console.log(ethernetInterfaces);
-  //Gcm.prototype.redisClient.lpush("serverStatus", JSON.stringify(ethernetInterfaces));
+  Gcm.prototype.redisClient.lpush("serverStatus", JSON.stringify(ethernetInterfaces));
   console.log(errorOutput);
 }
 
